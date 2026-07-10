@@ -1,4 +1,4 @@
-#primeiro teste com variaveis
+#primeiro teste com variáveis
 
 name = "Joca da Silva"
 age = 35
