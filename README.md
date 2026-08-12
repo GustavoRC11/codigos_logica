@@ -1,2 +1,2 @@
 # codigos_logica
-Primeiros códigos de programação python turma 2026.3
+Primeiros códigos de programação da turma 2026.3.
