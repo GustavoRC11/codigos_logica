@@ -9,14 +9,28 @@
 import subprocess
 import os
 
+import json
+
 # Importa "random" para gerar números aleatórios
 import random
 
 # Banco de dados em memória (dict)
-database = {
-    "1": {"name": "Joca da Silva", "contact": "(21) 998877665"},
-    "120": {"name": "Mariana Sirilampo", "contact": "mariana@sirilampo.com.br"}
-}
+ARQUIVO_DATABASE = "database.json"
+
+def carregar_database():
+    if os.path.exists(ARQUIVO_DATABASE):
+        with open(ARQUIVO_DATABASE, "r", encoding="utf-8") as arquivo:
+            return json.load(arquivo)
+
+    return {}
+
+
+def salvar_database():
+    with open(ARQUIVO_DATABASE, "w", encoding="utf-8") as arquivo:
+        json.dump(database, arquivo, ensure_ascii=False, indent=4)
+
+
+database = carregar_database()
 
 # Limpa a tela
 
@@ -47,8 +61,27 @@ def new_contact():
     # Gera o ID aleatório
     key = str(random.randint(1, 1000))
 
+    def gerar_id():
+    while True:
+        key = str(random.randint(1, 1000))
+
+        if key not in database:
+            return key
+
+            key = gerar_id()
+
+database[key] = {
+    "name": name,
+    "contact": contact
+}
+
+salvar_database()
+
     # Salva o novo cadastro no formato "dict"
     database[key] = dict(name=name, contact=contact)
+
+    ## Salva no arquivo JSON
+    salvar_database()
 
     # Confirmação
     print(f"\nUsuário com ID {key} adicionado!")
@@ -87,7 +120,45 @@ def edit_contact():
     cls()
     print("[ AGENDA FURRECA - EDITA CONTATO ]")
 
-    # ...
+    
+    print()
+    while True:
+        key = input("Digite o ID do usuário: ")
+        if key in database:
+            break
+        print("-----", "ID não encontrado!", "-----")
+
+    print()
+    print("ID:", key)
+    print(" • Nome:", database[key]['name'])
+    print(" • Contato:", database[key]['contact'])
+    print()
+
+    print("Digite os novos dados:")
+
+    # Recebe e valida o "name"
+    while True:
+        name = input(" • Nome: ")
+        if name.strip() != "":
+            break
+        print("-----", "Digite um nome válido!", "-----")
+
+    # Recebe e valida o "contact"
+    while True:
+        contact = input(" • Contato: ")
+        if contact.strip() != "":
+            break
+        print("-----", "Digite um contato válido!", "-----")
+
+    # Atualizar
+    database[key] = dict(name=name, contact=contact)
+
+    print()
+    print("Contato atualizado!")
+    input("Tecle [Enter] para continuar")
+    main()
+
+
 
     input("Tecle [Enter] para continuar")
     main()
