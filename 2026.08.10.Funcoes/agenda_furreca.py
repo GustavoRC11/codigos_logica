@@ -17,12 +17,13 @@ import random
 # Banco de dados em memória (dict)
 ARQUIVO_DATABASE = "database.json"
 
+
 def carregar_database():
     if os.path.exists(ARQUIVO_DATABASE):
         with open(ARQUIVO_DATABASE, "r", encoding="utf-8") as arquivo:
             return json.load(arquivo)
 
-    return {}
+    return dict()
 
 
 def salvar_database():
@@ -58,29 +59,16 @@ def new_contact():
     name = input(" • Nome: ")
     contact = input(" • Contato: ")
 
-    # Gera o ID aleatório
-    key = str(random.randint(1, 1000))
-
-    def gerar_id():
     while True:
         key = str(random.randint(1, 1000))
 
         if key not in database:
-            return key
-
-            key = gerar_id()
-
-database[key] = {
-    "name": name,
-    "contact": contact
-}
-
-salvar_database()
+            break
 
     # Salva o novo cadastro no formato "dict"
     database[key] = dict(name=name, contact=contact)
 
-    ## Salva no arquivo JSON
+    # Salva no arquivo JSON
     salvar_database()
 
     # Confirmação
@@ -120,7 +108,6 @@ def edit_contact():
     cls()
     print("[ AGENDA FURRECA - EDITA CONTATO ]")
 
-    
     print()
     while True:
         key = input("Digite o ID do usuário: ")
@@ -153,13 +140,10 @@ def edit_contact():
     # Atualizar
     database[key] = dict(name=name, contact=contact)
 
+    salvar_database()
+
     print()
     print("Contato atualizado!")
-    input("Tecle [Enter] para continuar")
-    main()
-
-
-
     input("Tecle [Enter] para continuar")
     main()
 
@@ -168,10 +152,23 @@ def delete_contact():
     cls()
     print("[ AGENDA FURRECA - APAGA CONTATO ]")
 
-    # ...
+    print()
+    while True:
+        key = input("Digite o ID do usuário: ")
+        if key in database:
+            break
+
+        print("-----", "ID não encontrado!", "-----")
+
+        del database[key]
+
+        salvar_database()
+
+    print("----- Contato apagado com sucesso! -----")
 
     input("Tecle [Enter] para continuar")
     main()
+
 
 def main(erro=str()):
     # Programa principal e "main loop"
